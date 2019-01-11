@@ -3,8 +3,16 @@
 
 using namespace std;
 
-inline void bf_compiler::brainfuck::load(string p)
+void bf_compiler::brainfuck::load(string p)
 {
+    for(int i=0;i<p.size();i++)
+    {
+        if(string("-+[]<>,.").find(p[i]) != string::npos)
+            this->program += p[i];
+    }
+}
 
-    this->program = p;
+void bf_compiler::brainfuck::exec()
+{
+    ;
 }

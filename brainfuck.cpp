@@ -34,11 +34,11 @@ int main(int argc, const char *argv[])
     {
         content += now + ' ';
     }
-    cout << content;
     f.close();
 
     bf_compiler::brainfuck bf;
     bf.load(content);
+    cout << bf.program;
     bf.exec();
     return 0;
 }

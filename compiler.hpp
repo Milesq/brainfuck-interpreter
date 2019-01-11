@@ -4,8 +4,10 @@
 
 namespace bf_compiler {
     class brainfuck {
-        std::string program;
-        inline void load(std::string);
+        public:
+        std::string program="";
+
+        void load(std::string);
         void exec();
     };
 }
