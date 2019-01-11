@@ -38,7 +38,6 @@ int main(int argc, const char *argv[])
 
     bf_compiler::brainfuck bf;
     bf.load(content);
-    cout << bf.program;
     bf.exec();
     return 0;
 }
