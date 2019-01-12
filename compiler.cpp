@@ -56,7 +56,7 @@ void bf_compiler::brainfuck::exec()
         ++memo;
     }
 
-    memo -= this->size / 2;
+    memo -= this->size;
 
     map<char, func> instruct = {
         {'+', [](int size, int &wsk) -> void { ++(*memo); }},
@@ -64,15 +64,17 @@ void bf_compiler::brainfuck::exec()
         {'[', [](int size, int &wsk) -> void {
             if(*memo == 0)
             {
+                // cout << "[ Skok do: " << myStrFind(program, ']', '[', wsk + 1);
                 wsk = myStrFind(program, ']', '[', wsk + 1);
             }
         }},
         {']', [](int size, int &wsk) -> void {
+            // cout << "] Skok do: " << myReversedStrFind(program, '[', ']', wsk - 1) - 1;
             wsk = myReversedStrFind(program, '[', ']', wsk - 1) - 1;
         }},
         {'<', [](int size, int &wsk) -> void { --memo; }},
         {'>', [](int size, int &wsk) -> void { ++memo; }},
-        {'.', [](int size, int &wsk) -> void { cout << static_cast<char>(*memo); }},
+        {'.', [](int size, int &wsk) -> void { cout << static_cast<int>(*memo); }},
         {',', [](int size, int &wsk) -> void { *memo = getch(); }}
     };
 
