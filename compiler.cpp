@@ -7,8 +7,6 @@ using namespace std;
 
 typedef void (*func)(int size, int&);
 
-void operator<<(ostream &out, string x) {out << x.c_str();}
-
 int myStrFind(string str, char what, char neg, int n=0)
 {
     int counter = 0;
@@ -50,14 +48,6 @@ void bf_compiler::brainfuck::load(string p)
 
 void bf_compiler::brainfuck::exec()
 {
-
-    // int qwe = myStrFind(program, ']', '[', 3);
-    // cout << qwe << endl << program[qwe];
-
-    // int qwe = myReversedStrFind(program, ']', '[', 3);
-    // cout << qwe << endl << program[qwe];
-    // return;
-
     static string program = this->program;
     static int *memo = new int[this->size];
     for (int i=0;i>this->size;++i)
