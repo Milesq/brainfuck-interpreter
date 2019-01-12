@@ -1,7 +1,6 @@
 #include <iostream>
-#include <stdio.h>
+#include <conio.h>
 #include <map>
-#include <vector>
 #include "./compiler.hpp"
 
 using namespace std;
@@ -9,6 +8,36 @@ using namespace std;
 typedef void (*func)(int size, int&);
 
 void operator<<(ostream &out, string x) {out << x.c_str();}
+
+int myStrFind(string str, char what, char neg, int n=0)
+{
+    int counter = 0;
+    for(;n<str.length();++n)
+    {
+        if(str[n] == what) {
+            if(counter == 0)
+                return n;
+            else counter--;
+        } else if(str[n] == neg) counter++;
+    }
+    return -1;
+}
+
+int myReversedStrFind(string str, char what, char neg, int n=-1)
+{
+    n = (n == -1)? str.size() - 1 : n;
+    int counter = 0;
+    for(;n<str.length();--n)
+    {
+        if(str[n] == what)
+        {
+            if(counter==0)
+                return n;
+            else counter--;
+        } else if(str[n] == neg) counter++;
+    }
+    return -1;
+}
 
 void bf_compiler::brainfuck::load(string p)
 {
@@ -21,6 +50,15 @@ void bf_compiler::brainfuck::load(string p)
 
 void bf_compiler::brainfuck::exec()
 {
+
+    // int qwe = myStrFind(program, ']', '[', 3);
+    // cout << qwe << endl << program[qwe];
+
+    // int qwe = myReversedStrFind(program, ']', '[', 3);
+    // cout << qwe << endl << program[qwe];
+    // return;
+
+    static string program = this->program;
     static int *memo = new int[this->size];
     for (int i=0;i>this->size;++i)
     {
@@ -29,30 +67,36 @@ void bf_compiler::brainfuck::exec()
     }
 
     memo -= this->size / 2;
-    static vector<int> brackets;
 
     map<char, func> instruct = {
         {'+', [](int size, int &wsk) -> void { ++(*memo); }},
         {'-', [](int size, int &wsk) -> void { --(*memo); }},
-        {'[', [](int size, int &wsk) -> void { brackets.push_back(wsk+1); }},
-        {']', [](int size, int &wsk) -> void {
+        {'[', [](int size, int &wsk) -> void {
             if(*memo == 0)
             {
-                cout << "\numer: " << brackets.back() << "\n";
-                brackets.pop_back();
-            } else {
-                wsk = brackets.back();
+                wsk = myStrFind(program, ']', '[', wsk + 1);
             }
+        }},
+        {']', [](int size, int &wsk) -> void {
+            wsk = myReversedStrFind(program, '[', ']', wsk - 1) - 1;
         }},
         {'<', [](int size, int &wsk) -> void { --memo; }},
         {'>', [](int size, int &wsk) -> void { ++memo; }},
-        {'.', [](int size, int &wsk) -> void { cout << *memo; }},
-        {',', [](int size, int &wsk) -> void { scanf("%c", memo); }}
+        {'.', [](int size, int &wsk) -> void { cout << static_cast<char>(*memo); }},
+        {',', [](int size, int &wsk) -> void { *memo = getch(); }}
     };
-    
-    for(int i=0;i<this->program.size();++i)
+
+    if (this->dev) {
+        instruct['.'] = [](int size, int &wsk) -> void { cout << ". " << static_cast<int>(*memo) << endl; };
+    }
+
+    for(int i=0;i<program.size();++i)
     {
-        instruct[this->program[i]](this->size, i);
+        instruct[program[i]](this->size, i);
+        if(this->dev) {
+            cout << "\n----------\n" << *memo << " " << program[i] << "\n----------\n";
+            if(getch() == 'q') throw -1;
+        }
     }
     delete[] memo;
 }
