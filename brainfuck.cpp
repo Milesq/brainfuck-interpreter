@@ -28,7 +28,6 @@ int main(int argc, const char *argv[])
         f.close();
         return EXIT_FAILURE;
     }
-
     string content, now;
     while(f >> now)
     {
@@ -36,7 +35,6 @@ int main(int argc, const char *argv[])
     }
     f.close();
 
-    // bf_compiler::brainfuck bf(true); // DEV version
     bf_compiler::brainfuck bf;
     bf.load(content);
     bf.exec();

@@ -76,17 +76,11 @@ void bf_compiler::brainfuck::exec()
         {',', [](int size, int &wsk) -> void { *memo = getch(); }}
     };
 
-    if (this->dev) {
-        instruct['.'] = [](int size, int &wsk) -> void { cout << ". " << static_cast<int>(*memo) << endl; };
-    }
-
     for(int i=0;i<program.size();++i)
     {
         instruct[program[i]](this->size, i);
-        if(this->dev) {
-            cout << "\n----------\n" << *memo << " " << program[i] << "\n----------\n";
-            if(getch() == 'q') throw -1;
-        }
+        // cout << "\n----------\n" << *memo << " " << program[i] << "\n----------\n";
+        // if(getch() == 'q') throw -1;
     }
     delete[] memo;
 }
