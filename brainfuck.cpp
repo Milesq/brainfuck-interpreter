@@ -27,7 +27,8 @@ int main(int argc, const char *argv[])
            now = "",
            argcv = parseArgs(argc, argv) + " P";
     bool dev = false,
-         integer = false;
+         integer = false,
+         nbf = true;
     vector<string> args;
 
     while(argcv.size() > 0)
@@ -44,6 +45,7 @@ int main(int argc, const char *argv[])
         if(i[0] != '-') fileName = i;
         if(i == "--int") integer = true;
         if(i == "--dev") dev = true;
+        if(i == "--ext") nbf = false;
     }
     
     fstream f(fileName, ios::in);
@@ -60,7 +62,7 @@ int main(int argc, const char *argv[])
     }
     f.close();
 
-    bf_compiler::brainfuck bf(dev, integer);
+    bf_compiler::brainfuck bf(dev, integer, nbf);
     bf.load(content);
     bf.exec();
     return 0;

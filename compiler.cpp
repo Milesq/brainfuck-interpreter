@@ -40,9 +40,12 @@ int myReversedStrFind(string str, char what, char neg, int n=-1)
 
 void bf_compiler::brainfuck::load(string p)
 {
+    string allowed = "-+[]<>,.";
+    if(!this->normalBrainfuck)
+        allowed += ":;";
     for(int i=0;i<p.size();i++)
     {
-        if(string("-+[]<>,.;:").find(p[i]) != string::npos)
+        if(allowed.find(p[i]) != string::npos)
             this->program += p[i];
     }
 }
