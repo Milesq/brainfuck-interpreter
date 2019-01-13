@@ -1,6 +1,7 @@
 #include <iostream>
 #include <conio.h>
 #include <map>
+#include <stack>
 #include "./compiler.hpp"
 
 using namespace std;
@@ -49,6 +50,7 @@ void bf_compiler::brainfuck::load(string p)
 void bf_compiler::brainfuck::exec()
 {
     static string program = this->program;
+    static stack<int> memoStack;
     static int *memo = new int[this->size];
     for (int i=0;i>this->size;++i)
     {
@@ -56,33 +58,45 @@ void bf_compiler::brainfuck::exec()
         ++memo;
     }
 
-    memo -= this->size;
+    memo -= this->size-1;
 
     map<char, func> instruct = {
+        // {';', [](int size, int &wsk) -> void { memoStack.push(*memo); }},
+        // {':', [](int size, int &wsk) -> void {
+        //     if(!memoStack.empty())
+        //     {
+        //         *memo = memoStack.top();
+        //         memoStack.pop();
+        //     } else *memo = 0;
+        // }},
         {'+', [](int size, int &wsk) -> void { ++(*memo); }},
         {'-', [](int size, int &wsk) -> void { --(*memo); }},
         {'[', [](int size, int &wsk) -> void {
             if(*memo == 0)
             {
-                // cout << "[ Skok do: " << myStrFind(program, ']', '[', wsk + 1);
                 wsk = myStrFind(program, ']', '[', wsk + 1);
             }
         }},
         {']', [](int size, int &wsk) -> void {
-            // cout << "] Skok do: " << myReversedStrFind(program, '[', ']', wsk - 1) - 1;
             wsk = myReversedStrFind(program, '[', ']', wsk - 1) - 1;
         }},
         {'<', [](int size, int &wsk) -> void { --memo; }},
         {'>', [](int size, int &wsk) -> void { ++memo; }},
-        {'.', [](int size, int &wsk) -> void { cout << static_cast<int>(*memo); }},
+        {'.', [](int size, int &wsk) -> void { cout << static_cast<char>(*memo); }},
         {',', [](int size, int &wsk) -> void { *memo = getch(); }}
     };
+
+    if(this->integer)
+        instruct['.'] = [](int size, int &wsk) -> void { cout << static_cast<int>(*memo) << endl; };
 
     for(int i=0;i<program.size();++i)
     {
         instruct[program[i]](this->size, i);
-        // cout << "\n----------\n" << *memo << " " << program[i] << "\n----------\n";
-        // if(getch() == 'q') throw -1;
+        /*if(this->dev)
+        {
+            cout << "\n----------\n" << *memo << " " << program[i] << "\n----------\n";
+            if(getch() == 'q') throw -1;
+        }*/
     }
     delete[] memo;
 }
