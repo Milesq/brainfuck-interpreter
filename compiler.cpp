@@ -57,8 +57,7 @@ void bf_compiler::brainfuck::exec()
         *memo = 0;
         ++memo;
     }
-
-    memo -= this->size-1;
+    memo -= this->size;
 
     map<char, func> instruct = {
         // {';', [](int size, int &wsk) -> void { memoStack.push(*memo); }},
