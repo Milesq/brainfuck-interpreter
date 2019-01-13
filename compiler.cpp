@@ -42,7 +42,7 @@ void bf_compiler::brainfuck::load(string p)
 {
     for(int i=0;i<p.size();i++)
     {
-        if(string("-+[]<>,.").find(p[i]) != string::npos)
+        if(string("-+[]<>,.;:").find(p[i]) != string::npos)
             this->program += p[i];
     }
 }
@@ -60,7 +60,7 @@ void bf_compiler::brainfuck::exec()
     memo -= this->size;
 
     map<char, func> instruct = {
-        /*{';', [](int size, int &wsk) -> void {
+        {';', [](int size, int &wsk) -> void {
             memoStack.push(*memo);
         }},
         {':', [](int size, int &wsk) -> void {
@@ -69,7 +69,7 @@ void bf_compiler::brainfuck::exec()
                 *memo = memoStack.top();
                 memoStack.pop();
             } else *memo = 0;
-        }},*/
+        }},
         {'+', [](int size, int &wsk) -> void { ++(*memo); }},
         {'-', [](int size, int &wsk) -> void { --(*memo); }},
         {'[', [](int size, int &wsk) -> void {
