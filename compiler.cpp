@@ -60,14 +60,16 @@ void bf_compiler::brainfuck::exec()
     memo -= this->size;
 
     map<char, func> instruct = {
-        // {';', [](int size, int &wsk) -> void { memoStack.push(*memo); }},
-        // {':', [](int size, int &wsk) -> void {
-        //     if(!memoStack.empty())
-        //     {
-        //         *memo = memoStack.top();
-        //         memoStack.pop();
-        //     } else *memo = 0;
-        // }},
+        /*{';', [](int size, int &wsk) -> void {
+            memoStack.push(*memo);
+        }},
+        {':', [](int size, int &wsk) -> void {
+            if(!memoStack.empty())
+            {
+                *memo = memoStack.top();
+                memoStack.pop();
+            } else *memo = 0;
+        }},*/
         {'+', [](int size, int &wsk) -> void { ++(*memo); }},
         {'-', [](int size, int &wsk) -> void { --(*memo); }},
         {'[', [](int size, int &wsk) -> void {
@@ -91,11 +93,11 @@ void bf_compiler::brainfuck::exec()
     for(int i=0;i<program.size();++i)
     {
         instruct[program[i]](this->size, i);
-        /*if(this->dev)
+        if(this->dev)
         {
             cout << "\n----------\n" << *memo << " " << program[i] << "\n----------\n";
             if(getch() == 'q') throw -1;
-        }*/
+        }
     }
     delete[] memo;
 }
