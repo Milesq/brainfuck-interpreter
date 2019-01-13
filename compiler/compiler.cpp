@@ -41,10 +41,26 @@ int myReversedStrFind(string str, char what, char neg, int n=-1)
 void bf_compiler::brainfuck::load(string p)
 {
     string allowed = "-+[]<>,.";
+    bool nextContinue = false;
     if(!this->normalBrainfuck)
-        allowed += ":;";
+        allowed += ":;*/";
     for(int i=0;i<p.size();i++)
     {
+        if(!this->normalBrainfuck)
+        {
+            if(nextContinue) // this must be first!!!
+            {
+                nextContinue = false;
+                this->program += p[i];
+                continue;
+            }
+
+            if(p[i]=='*' || p[i]=='/')
+            {
+                nextContinue = true;
+            }
+        }
+
         if(allowed.find(p[i]) != string::npos)
             this->program += p[i];
     }
@@ -72,6 +88,14 @@ void bf_compiler::brainfuck::exec()
                 *memo = memoStack.top();
                 memoStack.pop();
             } else *memo = 0;
+        }},
+        {'*', [](int size, int &wsk) -> void {
+            *memo *= (static_cast<int>(program[wsk+1]) - 48);
+            ++wsk;
+        }},
+        {'/', [](int size, int &wsk) -> void {
+            *memo /= (static_cast<int>(program[wsk+1]) - 48);
+            ++wsk;
         }},
         {'+', [](int size, int &wsk) -> void { ++(*memo); }},
         {'-', [](int size, int &wsk) -> void { --(*memo); }},

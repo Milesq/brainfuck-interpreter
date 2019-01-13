@@ -1,55 +1,19 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <string>
-#include "compiler.hpp"
+#include "compiler/compiler.hpp"
+#include "args/args.hpp"
 
 using namespace std;
 
-string parseArgs(int argc, const char *argv[])
-{
-	string args = "";
-	++argv;
-	for(unsigned short i = 1;i<argc;++i)
-	{
-		args += *argv;
-		args += ' ';
-		argv++;
-	}
-	args.pop_back();
-	return args;
-}
-
 int main(int argc, const char *argv[])
 {
-    string content,
-           fileName,
-           now = "",
-           argcv = parseArgs(argc, argv) + " P";
-    bool dev = false,
-         integer = false,
-         nbf = true;
-    vector<string> args;
+    string content, // brainfuck program
+           now = "";
+    argsInterpreter args(argc, argv);
 
-    while(argcv.size() > 0)
-    {
-        if(argcv[0] == ' ' && now != "") {
-            args.push_back(now);
-            now = "";
-        } else now += argcv[0];
-        argcv.erase(0, 1);
-    }
-
-    for(string i: args)
-    {
-        if(i[0] != '-') fileName = i;
-        if(i == "--int") integer = true;
-        if(i == "--dev") dev = true;
-        if(i == "--ext") nbf = false;
-    }
-    
-    fstream f(fileName, ios::in);
-    if(!f.good() || fileName[fileName.length()-1] != 'b')
+    fstream f(args[0], ios::in);
+    if(!f.good() || args[0][args[0].length()-1] != 'b')
     {
         cout << "Invalid path!";
         f.close();
@@ -62,7 +26,9 @@ int main(int argc, const char *argv[])
     }
     f.close();
 
-    bf_compiler::brainfuck bf(dev, integer, nbf);
+    bf_compiler::brainfuck bf(args["dev"]=="true",
+        args["int"]=="true",
+        args["ext"]=="true");
     bf.load(content);
     bf.exec();
     return 0;
