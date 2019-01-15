@@ -8,37 +8,7 @@
 
 using namespace std;
 
-typedef void (*func)(status);
-
-int myStrFind(string str, char what, char neg, int n=0)
-{
-    int counter = 0;
-    for(;n<str.length();++n)
-    {
-        if(str[n] == what) {
-            if(counter == 0)
-                return n;
-            else counter--;
-        } else if(str[n] == neg) counter++;
-    }
-    return -1;
-}
-
-int myReversedStrFind(string str, char what, char neg, int n=-1)
-{
-    n = (n == -1)? str.size() - 1 : n;
-    int counter = 0;
-    for(;n<str.length();--n)
-    {
-        if(str[n] == what)
-        {
-            if(counter==0)
-                return n;
-            else counter--;
-        } else if(str[n] == neg) counter++;
-    }
-    return -1;
-}
+typedef void (*func)(status&);
 
 void bf_compiler::brainfuck::load(string p)
 {
@@ -130,7 +100,7 @@ stack<int> bf_compiler::brainfuck::exec()
         //     *memo /= (static_cast<int>(program[wsk+1]) - 48);
         //     ++wsk;
         // }},
-        {'+', [](status st) -> void { ++(*st.memo); }},
+        {'+', [](status &st) -> void { ++(*st.memo); }},
         // {'+', [](int &wsk) -> void { ++(*memo); }},
         // {'-', [](int &wsk) -> void { --(*memo); }},
         // {'[', [](int &wsk) -> void {
@@ -142,13 +112,13 @@ stack<int> bf_compiler::brainfuck::exec()
         // {']', [](int &wsk) -> void { wsk = myReversedStrFind(program, '[', ']', wsk - 1) - 1; }},
         // {'<', [](int &wsk) -> void { --memo; }},
         // {'>', [](int &wsk) -> void { ++memo; }},
-        {'.', [](status st) -> void { cout << static_cast<char>(*st.memo); }},
+        {'.', [](status &st) -> void { cout << static_cast<char>(*st.memo); }}
         // {'.', [](int &wsk) -> void { cout << static_cast<char>(*memo); }},
         // {',', [](int &wsk) -> void { *memo = getch(); }}
     };
 
     if(this->integer)
-        instruct['.'] = [](int &wsk) -> void { cout << static_cast<int>(*memo) << endl; };
+        instruct['.'] = [](status &st) -> void { cout << static_cast<int>(*st.memo) << endl; };
 
     for(int i=0;i<program.size();++i)
     {

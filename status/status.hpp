@@ -12,11 +12,11 @@ class status {
     stack<int> &memoStack;
     string &program;
 
-    status(int &w, int &memo, stack<int> &ms, string &p):
+    status(int &w, int *memo, stack<int> &ms, string &p):
         wsk(w),
         memoStack(ms),
         program(p),
-        memo(&memo) { }
+        memo(memo) { }
 
     static int myStrFind(string, char, char, int n=0);
     static int myReversedStrFind(string, char, char, int n=-1);
