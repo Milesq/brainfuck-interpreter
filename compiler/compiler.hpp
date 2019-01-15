@@ -26,7 +26,7 @@ namespace bf_compiler {
             integer(_integer),
             normalBrainfuck(nbf) {}
         void load(string);
-        stack<int> exec();
+        stack<int> exec(stack<int> memoStack=stack<int>());
     };
 }
 #endif // BF_COMPILER

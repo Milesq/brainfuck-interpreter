@@ -1,4 +1,7 @@
+#include <string>
 #include "status.hpp"
+
+using std::string;
 
 int status::myReversedStrFind(string str, char what, char neg, int n)
 {

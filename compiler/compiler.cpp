@@ -4,7 +4,7 @@
 #include <map>
 #include <stack>
 #include "compiler.hpp"
-#include "status.hpp"
+#include "../status/status.hpp"
 
 using namespace std;
 
@@ -55,66 +55,61 @@ void bf_compiler::brainfuck::load(string p)
     }
 }
 
-stack<int> bf_compiler::brainfuck::exec()
+stack<int> bf_compiler::brainfuck::exec(stack<int> memoStack)
 {
     // cout << "Funkcje: ";
     // for(auto i: this->declaredFunctions) { cout << i.first << endl << i.second << "\n\n"; }
     // cout << "Program: " << this->program;
     // return stack<int>();
 
-    static string program = this->program;
-    static stack<int> memoStack;
-    static map<string, string> declaredFunctions = this->declaredFunctions;
-    static int *memo = new int[this->size];
+    int *memo = new int[this->size];
 
-    for (int i=0;i>this->size;++i)
+    for (int i=0;i<this->size;++i)
     {
         *memo = 0;
         ++memo;
     }
-    memo -= this->size;
+    memo -= this->size / 2;
 
     map<char, func> instruct = {
-        // {'(', [](int &wsk) -> void {
+        // {'(', [](status &st) -> void {
         //     string func = "";
         //     while(program[++wsk] != ')') func += program[wsk];
         //     if(declaredFunctions[func] == "") throw "Undeclared function " + func + "!";
         // }},
-        // {':', [](int &wsk) -> void { memoStack.push(*memo); }},
-        // {';', [](int &wsk) -> void {
-        //     if(!memoStack.empty())
-        //     {
-        //         *memo = memoStack.top();
-        //         memoStack.pop();
-        //     } else *memo = 0;
-        // }},
-        // {'%', [](int &wsk) -> void {
-        //     *memo %= (static_cast<int>(program[wsk+1]) - 48);
-        //     ++wsk;
-        // }},
-        // {'*', [](int &wsk) -> void {
-        //     *memo *= (static_cast<int>(program[wsk+1]) - 48);
-        //     ++wsk;
-        // }},
-        // {'/', [](int &wsk) -> void {
-        //     *memo /= (static_cast<int>(program[wsk+1]) - 48);
-        //     ++wsk;
-        // }},
+        {':', [](status &st) -> void { st.memoStack.push(*st.memo); }},
+        {';', [](status &st) -> void {
+            if(!st.memoStack.empty())
+            {
+                *st.memo = st.memoStack.top();
+                st.memoStack.pop();
+            } else *st.memo = 0;
+        }},
+        {'%', [](status &st) -> void {
+            *st.memo %= (static_cast<int>(st.program[st.wsk+1]) - 48);
+            ++st.wsk;
+        }},
+        {'*', [](status &st) -> void {
+            *st.memo *= (static_cast<int>(st.program[st.wsk+1]) - 48);
+            ++st.wsk;
+        }},
+        {'/', [](status &st) -> void {
+            *st.memo /= (static_cast<int>(st.program[st.wsk+1]) - 48);
+            ++st.wsk;
+        }},
         {'+', [](status &st) -> void { ++(*st.memo); }},
-        // {'+', [](int &wsk) -> void { ++(*memo); }},
-        // {'-', [](int &wsk) -> void { --(*memo); }},
-        // {'[', [](int &wsk) -> void {
-        //     if(*memo == 0)
-        //     {
-        //         wsk = myStrFind(program, ']', '[', wsk + 1);
-        //     }
-        // }},
-        // {']', [](int &wsk) -> void { wsk = myReversedStrFind(program, '[', ']', wsk - 1) - 1; }},
-        // {'<', [](int &wsk) -> void { --memo; }},
-        // {'>', [](int &wsk) -> void { ++memo; }},
-        {'.', [](status &st) -> void { cout << static_cast<char>(*st.memo); }}
-        // {'.', [](int &wsk) -> void { cout << static_cast<char>(*memo); }},
-        // {',', [](int &wsk) -> void { *memo = getch(); }}
+        {'-', [](status &st) -> void { --(*st.memo); }},
+        {'[', [](status &st) -> void {
+            if(*st.memo == 0)
+            {
+                st.wsk = status::myStrFind(st.program, ']', '[', st.wsk + 1);
+            }
+        }},
+        {']', [](status &st) -> void { st.wsk = status::myReversedStrFind(st.program, '[', ']', st.wsk - 1) - 1; }},
+        {'<', [](status &st) -> void { --st.memo; }},
+        {'>', [](status &st) -> void { ++st.memo; }},
+        {'.', [](status &st) -> void { cout << static_cast<char>(*st.memo); }},
+        {',', [](status &st) -> void { *st.memo = getch(); }}
     };
 
     if(this->integer)
@@ -122,7 +117,7 @@ stack<int> bf_compiler::brainfuck::exec()
 
     for(int i=0;i<program.size();++i)
     {
-        status st(i, memo, memoStack, program);
+        status st(i, memo, memoStack, this->program);
         instruct[program[i]](st);
         if(this->dev)
         {
