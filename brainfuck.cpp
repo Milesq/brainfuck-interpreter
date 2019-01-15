@@ -28,7 +28,7 @@ int main(int argc, const char *argv[])
 
     bf_compiler::brainfuck bf(args["dev"]=="true",
         args["int"]=="true",
-        args["ext"]=="true");
+        args["ext"]!="true");
     bf.load(content);
     bf.exec();
     return 0;
