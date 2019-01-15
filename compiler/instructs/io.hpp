@@ -4,7 +4,13 @@
 #include "../../status/status.hpp"
 namespace instructs
 {
-    void out(status &st){std::cout << static_cast<char>(*st.memo);}
+    void out(status &st)
+    {
+        if(st.integer)
+            cout << static_cast<int>(*st.memo) << endl;
+        else
+            std::cout << static_cast<char>(*st.memo);
+    }
     void in(status &st){*st.memo = getch();}
 
     void popstack(status &st)

@@ -1,7 +1,8 @@
 CC = g++
 out = bf
 files = brainfuck.cpp \
-		compiler/compiler.cpp \
+		compiler/compilerLoad.cpp \
+		compiler/compilerExec.cpp \
 		compiler/compiler.hpp \
 		args/args.hpp \
 		args/args.cpp \

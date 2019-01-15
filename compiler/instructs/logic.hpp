@@ -12,4 +12,11 @@ namespace instructs
     {
         st.wsk = status::myReversedStrFind(st.program, '[', ']', st.wsk - 1) - 1; 
     }
+    /*void funcBeg(status &st)
+    {
+        string func = "";
+        while(program[++wsk] != ')') func += program[wsk];
+        if(declaredFunctions[func] == "")
+            throw "Undeclared function " + func + "!";
+    }*/
 }
