@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
-#include <conio.h>
 #include <map>
 #include <stack>
 #include "compiler.hpp"
 #include "../status/status.hpp"
+#include "./instructs/every.hpp"
 
 using namespace std;
 
@@ -58,7 +58,8 @@ void bf_compiler::brainfuck::load(string p)
 stack<int> bf_compiler::brainfuck::exec(stack<int> memoStack)
 {
     // cout << "Funkcje: ";
-    // for(auto i: this->declaredFunctions) { cout << i.first << endl << i.second << "\n\n"; }
+    // for(auto i: this->declaredFunctions) {
+    //    cout << i.first << endl << i.second << "\n\n"; }
     // cout << "Program: " << this->program;
     // return stack<int>();
 
@@ -75,45 +76,27 @@ stack<int> bf_compiler::brainfuck::exec(stack<int> memoStack)
         // {'(', [](status &st) -> void {
         //     string func = "";
         //     while(program[++wsk] != ')') func += program[wsk];
-        //     if(declaredFunctions[func] == "") throw "Undeclared function " + func + "!";
+        //     if(declaredFunctions[func] == "")
+        //          throw "Undeclared function " + func + "!";
         // }},
-        {':', [](status &st) -> void { st.memoStack.push(*st.memo); }},
-        {';', [](status &st) -> void {
-            if(!st.memoStack.empty())
-            {
-                *st.memo = st.memoStack.top();
-                st.memoStack.pop();
-            } else *st.memo = 0;
-        }},
-        {'%', [](status &st) -> void {
-            *st.memo %= (static_cast<int>(st.program[st.wsk+1]) - 48);
-            ++st.wsk;
-        }},
-        {'*', [](status &st) -> void {
-            *st.memo *= (static_cast<int>(st.program[st.wsk+1]) - 48);
-            ++st.wsk;
-        }},
-        {'/', [](status &st) -> void {
-            *st.memo /= (static_cast<int>(st.program[st.wsk+1]) - 48);
-            ++st.wsk;
-        }},
-        {'+', [](status &st) -> void { ++(*st.memo); }},
-        {'-', [](status &st) -> void { --(*st.memo); }},
-        {'[', [](status &st) -> void {
-            if(*st.memo == 0)
-            {
-                st.wsk = status::myStrFind(st.program, ']', '[', st.wsk + 1);
-            }
-        }},
-        {']', [](status &st) -> void { st.wsk = status::myReversedStrFind(st.program, '[', ']', st.wsk - 1) - 1; }},
-        {'<', [](status &st) -> void { --st.memo; }},
-        {'>', [](status &st) -> void { ++st.memo; }},
-        {'.', [](status &st) -> void { cout << static_cast<char>(*st.memo); }},
-        {',', [](status &st) -> void { *st.memo = getch(); }}
+        {':', instructs::pushstack},
+        {';', instructs::popstack},
+        {'%', instructs::modulo},
+        {'*', instructs::multiply},
+        {'/', instructs::divide},
+        {'+', instructs::add},
+        {'-', instructs::sub},
+        {'[', instructs::loopBeg},
+        {']', instructs::loopEnd},
+        {'<', instructs::left},
+        {'>', instructs::right},
+        {'.', instructs::out},
+        {',', instructs::in}
     };
 
     if(this->integer)
-        instruct['.'] = [](status &st) -> void { cout << static_cast<int>(*st.memo) << endl; };
+        instruct['.'] =
+            [](status &st) -> void { cout << static_cast<int>(*st.memo) << endl; };
 
     for(int i=0;i<program.size();++i)
     {
@@ -121,7 +104,8 @@ stack<int> bf_compiler::brainfuck::exec(stack<int> memoStack)
         instruct[program[i]](st);
         if(this->dev)
         {
-            cout << "\n----------\n" << *memo << " " << program[i] << "\n----------\n";
+            cout << "\n----------\n" << *memo
+                << " " << program[i] << "\n----------\n";
             if(getch() == 'q') throw -1;
         }
     }
