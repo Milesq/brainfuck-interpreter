@@ -1,6 +1,8 @@
 #include "../../status/status.hpp"
 #include "../compiler.hpp"
+#include "../predefFuncs.hpp"
 #include <map>
+
 namespace instructs
 {
     void loopBeg(status &st)
@@ -19,7 +21,10 @@ namespace instructs
         string func = "";
         while(st.program[++st.wsk] != ')') func += st.program[st.wsk];
         if(st.declaredFunctions[func] == "")
-            throw "Undeclared function " + func + "!";
+        {
+            if(!predefinedFuncs[func]) throw "Undeclared function " + func + "!";
+            st.memoStack = predefinedFuncs[func](st.memoStack);
+        }
         else {
             bf_compiler::brainfuck procedure(st.dev, st.integer, false);
             procedure.load(st.declaredFunctions[func]);

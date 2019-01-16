@@ -4,7 +4,7 @@
 #include <stack>
 #include "compiler.hpp"
 #include "../status/status.hpp"
-#include "./instructs/every.hpp"
+#include "instructs/every.hpp"
 
 using namespace std;
 
