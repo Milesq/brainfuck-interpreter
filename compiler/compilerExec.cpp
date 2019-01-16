@@ -29,12 +29,13 @@ stack<int> bf_compiler::brainfuck::exec(stack<int> memoStack)
     memo -= this->size / 2;
 
     map<char, func> instruct = {
-        // {'(', instructs::funcBeg},
+        {'(', instructs::funcBeg},
         {':', instructs::pushstack},
         {';', instructs::popstack},
         {'%', instructs::modulo},
         {'*', instructs::multiply},
         {'/', instructs::divide},
+
         {'+', instructs::add},
         {'-', instructs::sub},
         {'[', instructs::loopBeg},
@@ -47,7 +48,14 @@ stack<int> bf_compiler::brainfuck::exec(stack<int> memoStack)
 
     for(int i=0;i<program.size();++i)
     {
-        status st(i, memo, memoStack, this->program, this->integer);
+        status st(i,
+                  memo,
+                  memoStack,
+                  this->program,
+                  this->integer,
+                  this->dev,
+                  this->declaredFunctions);
+
         instruct[program[i]](st);
         if(this->dev)
         {

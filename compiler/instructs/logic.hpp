@@ -1,4 +1,6 @@
 #include "../../status/status.hpp"
+#include "../compiler.hpp"
+#include <map>
 namespace instructs
 {
     void loopBeg(status &st)
@@ -12,11 +14,16 @@ namespace instructs
     {
         st.wsk = status::myReversedStrFind(st.program, '[', ']', st.wsk - 1) - 1; 
     }
-    /*void funcBeg(status &st)
+    void funcBeg(status &st)
     {
         string func = "";
-        while(program[++wsk] != ')') func += program[wsk];
-        if(declaredFunctions[func] == "")
+        while(st.program[++st.wsk] != ')') func += st.program[st.wsk];
+        if(st.declaredFunctions[func] == "")
             throw "Undeclared function " + func + "!";
-    }*/
+        else {
+            bf_compiler::brainfuck procedure(st.dev, st.integer, false);
+            procedure.load(st.declaredFunctions[func]);
+            st.memoStack = procedure.exec(st.memoStack);
+        }
+    }
 }

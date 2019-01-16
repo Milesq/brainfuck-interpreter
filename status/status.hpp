@@ -1,4 +1,5 @@
 #include <stack>
+#include <map>
 #include <iostream>
 #ifndef STATUS
 #define STATUS
@@ -12,13 +13,23 @@ class status {
     stack<int> &memoStack;
     string &program;
     bool &integer;
+    bool &dev;
+    map<string, string> declaredFunctions;
 
-    status(int &w, int *_memo, stack<int> &ms, string &p, bool &_integer):
+    status(int &w,
+           int *_memo,
+           stack<int> &ms,
+           string &p,
+           bool &_integer,
+           bool &_dev,
+           map<string, string> &df):
         wsk(w),
         memoStack(ms),
         program(p),
         memo(_memo),
-        integer(_integer) { }
+        declaredFunctions(df),
+        integer(_integer),
+        dev(_dev){ }
 
     static int myStrFind(string, char, char, int n=0);
     static int myReversedStrFind(string, char, char, int n=-1);
