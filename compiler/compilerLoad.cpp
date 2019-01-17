@@ -39,7 +39,8 @@ void bf_compiler::brainfuck::load(string p)
             if(p[i] == '(')
             {
                 this->program += '(';
-                while(p[i++] != ')') this->program += p[i];
+                while(p[++i] != ')') this->program += p[i];
+                this->program += ")";
                 continue;
             }
         }
