@@ -19,7 +19,7 @@ stack<int> bf_compiler::brainfuck::exec(stack<int> memoStack)
     // cout << "\nProgram: " << this->program;
     // return stack<int>();
 
-    int *memo = new int[this->size];
+    static int *memo = new int[this->size];
 
     for (int i=0;i<this->size;++i)
     {

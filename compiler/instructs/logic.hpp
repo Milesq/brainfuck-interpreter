@@ -24,8 +24,7 @@ namespace instructs
         {
             if(!predefinedFuncs[func]) throw "Undeclared function " + func + "!";
             st.memoStack = predefinedFuncs[func](st.memoStack);
-        }
-        else {
+        } else {
             bf_compiler::brainfuck procedure(st.dev, st.integer, false);
             procedure.load(st.declaredFunctions[func]);
             st.memoStack = procedure.exec(st.memoStack);

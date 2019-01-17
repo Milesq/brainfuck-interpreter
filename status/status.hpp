@@ -8,28 +8,28 @@ using namespace std;
 
 class status {
     public:
-    int *memo;
     int &wsk;
+    int *&memo;
     stack<int> &memoStack;
     string &program;
     bool &integer;
     bool &dev;
-    map<string, string> declaredFunctions;
+    map<string, string> &declaredFunctions;
 
     status(int &w,
-           int *_memo,
+           int *&memo,
            stack<int> &ms,
            string &p,
            bool &_integer,
            bool &_dev,
            map<string, string> &df):
         wsk(w),
+        memo(memo),
         memoStack(ms),
         program(p),
-        memo(_memo),
-        declaredFunctions(df),
         integer(_integer),
-        dev(_dev){ }
+        dev(_dev),
+        declaredFunctions(df) { }
 
     static int myStrFind(string, char, char, int n=0);
     static int myReversedStrFind(string, char, char, int n=-1);
