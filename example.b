@@ -1,5 +1,5 @@
 "add2"{
-;++: this will be execute always
+;++:
 }
 
 +:
