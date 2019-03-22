@@ -26,7 +26,7 @@ map<string, T(*)(T)> predefinedFuncs = {
             firstTime = false;
         }
 
-		int min = popStack(st);
+	int min = popStack(st);
         int max = popStack(st);
         max = (max==0)? 100 : max;
         st.push(rand() % max + min);
